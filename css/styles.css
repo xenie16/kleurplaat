@@ -13,44 +13,19 @@ table {
    padding: 0;
 }
 
-.white {
-   background-color: white;
-}
-
-.red {
-   background-color: red;
-}
-
-.green {
-   background-color: green;
-}
-
-.blue {
-   background-color: blue;
-}
-
 button {
    margin: 0 0.5em;
-   align-items: center;
    background-color: #9ae4ef;
    border: 2px solid #111;
    border-radius: 8px;
-   box-sizing: border-box;
    color: #111;
    cursor: pointer;
-   font-family: Inter, sans-serif;
-   font-size: 16px;
+   font-size: 1em;
    height: 48px;
    justify-content: center;
    line-height: 24px;
-   max-width: 100%;
    padding: 0 25px;
    position: relative;
-   text-align: center;
-   text-decoration: none;
-   user-select: none;
-   -webkit-user-select: none;
-   touch-action: manipulation;
 }
 
 button:after {
@@ -62,18 +37,13 @@ button:after {
    width: 100%;
    position: absolute;
    top: -2px;
-   transform: translate(8px, 8px);
+   transform: translate(7px, 5px);
    transition: transform .2s ease-out;
    z-index: -1;
 }
 
 button:hover:after {
    transform: translate(0, 0);
-}
-
-button-56:active {
-   background-color: #daf8ff;
-   outline: 0;
 }
 
 button:hover {
