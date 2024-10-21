@@ -3,8 +3,10 @@
 import { ColoringPageCreator } from "./ColoringPageCreator.js";
 
 const config = {
-   rows: 10,
-   columns: 10,
+   coloringTableBodyId: document.getElementById("coloringTableBody"),
+   colorsTableBodyId: document.getElementById("colorsTableBody"),
+   rows: 5,
+   columns: 5,
    colors: ["white", "red", "green", "blue"],
 }
 

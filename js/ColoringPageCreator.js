@@ -1,87 +1,40 @@
 "use strict";
 
+import { ColoringGrid } from "./ColoringGrid.js";
+import { ColorPalette } from "./ColorPalette.js";
+
 export class ColoringPageCreator {
    constructor(config) {
+      this.coloringTableBody = config.coloringTableBodyId;
+      this.colorsTableBody = config.colorsTableBodyId;
+
       this.rows = config.rows || 10;
       this.columns = config.columns || 10;
       this.colors = config.colors || ["white", "red", "green", "blue",];
+      this.resetColor = this.colors[0];
 
-      this.coloringTableBody = document.getElementById("coloringTableBody");
-      this.colorsTableBody = document.getElementById("colorsTableBody");
+      this.colorPalette = new ColorPalette({
+         table: this.colorsTableBody,
+         rows: 1,
+         columns: this.colors.length,
+         colors: this.colors,
+      });
 
-      if (!this.coloringTableBody || !this.colorsTableBody) {
-         throw new Error("Table elements not found in the DOM");
-      }
+      this.coloringGrid = new ColoringGrid({
+         table: this.coloringTableBody,
+         rows: this.rows,
+         columns: this.columns,
+         colors: this.colors,
+         colorPalette: this.colorPalette,
+      });
 
       this.saveButton = document.getElementById("saveButton");
       this.loadButton = document.getElementById("loadButton");
       this.resetButton = document.getElementById("resetButton");
 
-
-      this.selectedColor = this.colors[0];
-
-      this.setupTable({
-         table: this.coloringTableBody,
-         rows: this.rows,
-         columns: this.columns,
-         selectedColor: this.selectedColor,
-      });
-
-      this.setupTable({
-         table: this.colorsTableBody,
-         rows: 1,
-         columns: this.colors.length,
-         colors: this.colors
-      });
-
       this.saveButton.addEventListener("click", () => this.saveClicked());
       this.loadButton.addEventListener("click", () => this.loadClicked());
       this.resetButton.addEventListener("click", () => this.resetClicked());
-   }
-
-   setupTable({ table, rows, columns, selectedColor, colors = null }) {
-      for (let i = 0; i < rows; i++) {
-         const newRow = document.createElement("tr");
-         for (let j = 0; j < columns; j++) {
-            const newCell = document.createElement("td");
-
-            if (colors) {
-               this.customCellSetup(newCell, colors[j]);
-               this.handleColorCellClick(newCell, colors[j]);
-            } else {
-               newCell.style.backgroundColor = selectedColor;
-               this.handleColoringCellClick(newCell, i, j);
-            }
-            newRow.appendChild(newCell);
-         }
-         table.appendChild(newRow);
-      }
-   }
-
-   customCellSetup(newCell, color) {
-      newCell.style.backgroundColor = color;
-   }
-
-   handleColoringCellClick(cell, row, column) {
-      cell.addEventListener("click", () => {
-         const originalColor = cell.style.backgroundColor;
-         const newColor = this.selectedColor;
-
-         cell.style.backgroundColor = newColor;
-
-         if (originalColor !== newColor) {
-            console.log(`I am field ${row + 1}, ${column + 1} and I was just colored ${newColor}`);
-         } else {
-            console.log(`I am field ${row + 1}, ${column + 1} and I am ${originalColor}`);
-         }
-
-      });
-   }
-
-   handleColorCellClick(cell, color) {
-      cell.addEventListener("click", () => {
-         this.selectedColor = color;
-      })
    }
 
    resetClicked(resetColor = this.colors[0]) {
