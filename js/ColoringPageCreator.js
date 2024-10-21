@@ -64,8 +64,17 @@ export class ColoringPageCreator {
 
    handleColoringCellClick(cell, row, column) {
       cell.addEventListener("click", () => {
-         cell.style.backgroundColor = this.selectedColor;
-         console.log(`I am field ${row + 1}, ${column + 1} and I was just colored ${this.selectedColor}`);
+         const originalColor = cell.style.backgroundColor;
+         const newColor = this.selectedColor;
+
+         cell.style.backgroundColor = newColor;
+
+         if (originalColor !== newColor) {
+            console.log(`I am field ${row + 1}, ${column + 1} and I was just colored ${newColor}`);
+         } else {
+            console.log(`I am field ${row + 1}, ${column + 1} and I am ${originalColor}`);
+         }
+
       });
    }
 
