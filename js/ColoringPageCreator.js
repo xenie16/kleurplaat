@@ -47,10 +47,63 @@ export class ColoringPageCreator {
    }
 
    saveClicked() {
-      console.log('save clicked');
+      const bodyRows = this.coloringTableBody.children;
+      const rows = [];
+
+      for (let i = 0; i < bodyRows.length; i++) {
+         const row = [];
+         const rowCells = bodyRows[i].children;
+
+         for (let j = 0; j < rowCells.length; j++) {
+            const cell = rowCells[j];
+            row.push(cell.style.backgroundColor);
+         }
+
+         rows.push(row);
+      }
+
+      const json = JSON.stringify(rows);
+      const blob = new Blob([json], { type: "application/json" });
+      console.log(json);
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "drawing.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      URL.revokeObjectURL(url);
    }
 
    loadClicked() {
-      console.log('load clicked');
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "application/json";
+
+      input.addEventListener("change", () => {
+         const file = input.files[0];
+
+         if (file) {
+            const reader = new FileReader();
+
+            reader.addEventListener("load", () => {
+               const json = reader.result;
+               const rows = JSON.parse(json);
+
+               for (let i = 0; i < rows.length; i++) {
+                  for (let j = 0; j < rows[i].length; j++) {
+                     const cell = this.coloringTableBody.children[i].children[j];
+                     cell.style.backgroundColor = rows[i][j];
+                  }
+               }
+            });
+
+            reader.readAsText(file);
+         }
+      });
+
+      input.click();
    }
 }
