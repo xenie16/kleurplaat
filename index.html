@@ -12,6 +12,18 @@
 
 <body>
 
+   <div id="settingsIcon" class="settings-icon" title="Settings">⚙️</div>
+
+   <section id="settingsContainer" class="settings-container" style="display: none;">
+      <label>Rows:
+         <input type="number" id="rowInput" value="5" min="1">
+      </label>
+      <label>Columns:
+         <input type="number" id="colInput" value="5" min="1">
+      </label>
+      <button id="generateButton" type="button">Generate</button>
+   </section>
+
    <table>
       <tbody id="coloringTableBody">
       </tbody>
