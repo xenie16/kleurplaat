@@ -1,51 +1,80 @@
 "use strict";
 
 export class ColoringGrid {
-   constructor({ table, rows, columns, colors, colorPalette }) {
+   #table;
+   #colorPalette;
+   #gridState;
+   #eventHandlers;
 
-      this.table = table;
-      this.rows = rows;
-      this.columns = columns;
-      this.colors = colors;
-      this.defaultColor = colors[0];
-
-      this.colorPalette = colorPalette;
-
-      this.setupTable({
-         table: this.table,
-         rows: this.rows,
-         columns: this.columns,
-         defaultColor: this.defaultColor
-      })
+   constructor(config) {
+      this.validateConfig(config);
+      this.initializeState(config);
+      this.initializeEventHandlers();
+      this.createColoringGrid();
    }
 
-   setupTable({ table, rows, columns, defaultColor }) {
-      for (let i = 0; i < rows; i++) {
-         const newRow = document.createElement("tr");
-         for (let j = 0; j < columns; j++) {
-            const newCell = document.createElement("td");
-            newCell.style.backgroundColor = defaultColor;
+   validateConfig({ table, rows, columns, colors, colorPalette }) {
+      if (!table || !rows || !columns || !colors, !colorPalette) {
+         throw new Error("Missing required configuration properties");
+      }
 
-            this.handleColorCellClick(newCell, i, j);
-
-            newRow.appendChild(newCell);
-         }
-         table.appendChild(newRow);
+      if (!Array.isArray(colors) || colors.length < 1) {
+         throw new Error("Colors must be an array with at least one color");
       }
    }
 
-   handleColorCellClick(cell, row, column) {
-      cell.addEventListener("click", () => {
-         const originalColor = cell.style.backgroundColor;
-         const newColor = this.colorPalette.selectedColor;
+   initializeState({ table, rows, columns, colors, colorPalette }) {
+      this.#table = table;
+      this.#colorPalette = colorPalette;
+      this.#gridState = {
+         rows,
+         columns,
+         colors: [...colors],
+         defaultColor: colors[0],
+      };
+   }
 
-         cell.style.backgroundColor = newColor;
+   initializeEventHandlers() {
+      this.#eventHandlers = {
+         cellClick: this.handleCellClick.bind(this),
+      };
+   }
 
-         if (originalColor !== newColor) {
-            console.log(`I am field ${row + 1}, ${column + 1} and I was just colored ${newColor}`);
-         } else {
-            console.log(`I am field ${row + 1}, ${column + 1} and I am ${originalColor}`);
+   createColoringGrid() {
+      const { rows, columns, defaultColor } = this.#gridState;
+
+      for (let row = 0; row < rows; row++) {
+         const newRow = document.createElement("tr");
+
+         for (let column = 0; column < columns; column++) {
+            const newCell = document.createElement("td");
+            newCell.style.backgroundColor = defaultColor;
+
+            newCell.dataset.row = row;
+            newCell.dataset.column = column;
+
+            newCell.addEventListener("click", this.#eventHandlers.cellClick);
+            newRow.appendChild(newCell);
          }
-      });
+
+         this.#table.appendChild(newRow);
+      }
+   }
+
+   handleCellClick(event) {
+      const cell = event.target;
+      const row = parseInt(cell.dataset.row);
+      const column = parseInt(cell.dataset.column);
+      const originalColor = cell.style.backgroundColor;
+      const newColor = this.#colorPalette.selectedColor;
+
+      cell.style.backgroundColor = newColor;
+
+      if (originalColor !== newColor) {
+         console.log(`I am field ${row + 1}, ${column + 1} and I was just colored ${newColor}`);
+      } else {
+         console.log(`I am field ${row + 1}, ${column + 1} and I am ${originalColor}`);
+      }
+
    }
 }
