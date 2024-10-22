@@ -4,7 +4,7 @@ export class Settings {
 
    #elements;
 
-   constructor(config) {
+   constructor() {
       this.initializeElements();
       this.bindEvents();
    }
