@@ -7,9 +7,7 @@ const config = {
    colorsTableBodyId: document.getElementById("colorsTableBody"),
    rows: 5,
    columns: 5,
-   colors: ["white", "red", "green", "blue"],
+   colors: ["white", "red", "green", "blue", "black"],
 }
 
 new ColoringPageCreator(config);
-
-
