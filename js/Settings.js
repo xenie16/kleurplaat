@@ -34,8 +34,8 @@ export class Settings {
       const value = input.value.replace(/[^0-9]/g, '');
       const numValue = parseInt(value);
 
-      if (numValue > 50) {
-         input.value = 50;
+      if (numValue > 30) {
+         input.value = 30;
       } else if (numValue < 1) {
          input.value = 1;
       } else {
