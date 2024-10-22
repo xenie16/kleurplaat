@@ -43,6 +43,8 @@ export class ColoringGrid {
    createColoringGrid() {
       const { rows, columns, defaultColor } = this.#gridState;
 
+      this.#table.style.setProperty("--columns", columns);
+
       for (let row = 0; row < rows; row++) {
          const newRow = document.createElement("tr");
 
