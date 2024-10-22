@@ -10,4 +10,8 @@ const config = {
    colors: ["white", "red", "green", "blue", "black"],
 }
 
-new ColoringPageCreator(config);
+try {
+   new ColoringPageCreator(config);
+} catch (error) {
+   console.log('Failed to initialize the app.');
+}
