@@ -2,40 +2,64 @@
 
 export class ColorPalette {
 
-   constructor({ table, rows, columns, colors }) {
-      this.table = table;
-      this.rows = rows;
-      this.columns = columns;
-      this.colors = colors;
+   #table
+   #paletteState;
+   #eventHandlers;
 
-      this.selectedColor = colors[0];
-
-      this.setupTable(
-         {
-            table: this.table,
-            rows: this.rows,
-            columns: this.columns,
-            colors: this.colors
-         }
-      );
+   constructor(config) {
+      this.validateConfig(config);
+      this.initializeState(config);
+      this.initializeEventHandlers();
+      this.createPalette();
    }
 
-   setupTable({ table, rows, columns, colors }) {
-      for (let i = 0; i < rows; i++) {
-         const newRow = document.createElement("tr");
-         for (let j = 0; j < columns; j++) {
-            const newCell = document.createElement("td");
-            newCell.style.backgroundColor = colors[j];
-            this.handleColorCellClick(newCell, colors[j]);
-            newRow.appendChild(newCell);
-         }
-         table.appendChild(newRow);
+   validateConfig({ table, rows, columns, colors }) {
+      if (!table || !rows || !columns || !colors) {
+         throw new Error("Missing required configuration properties");
+      }
+
+      if (!Array.isArray(colors) || colors.length < 1) {
+         throw new Error("Colors must be an array with at least one color");
       }
    }
 
-   handleColorCellClick(cell, color) {
-      cell.addEventListener("click", () => {
-         this.selectedColor = color;
-      });
+   initializeState({ table, rows, columns, colors }) {
+      this.#table = table;
+      this.#paletteState = {
+         rows,
+         columns,
+         colors: [...colors],
+         selectedColor: colors[0],
+      };
+   }
+
+   initializeEventHandlers() {
+      this.#eventHandlers = {
+         cellClick: this.handleColorCellClick.bind(this),
+      };
+   }
+
+   createPalette() {
+      for (let row = 0; row < this.#paletteState.rows; row++) {
+         const newRow = document.createElement("tr");
+
+         for (let column = 0; column < this.#paletteState.columns; column++) {
+            const newCell = document.createElement("td");
+            newCell.style.backgroundColor = this.#paletteState.colors[column];
+            newCell.addEventListener("click", this.#eventHandlers.cellClick);
+            newRow.appendChild(newCell);
+         }
+
+         this.#table.appendChild(newRow);
+      }
+   }
+
+   handleColorCellClick(event) {
+      const color = event.target.style.backgroundColor;
+      this.#paletteState.selectedColor = color;
+   }
+
+   get selectedColor() {
+      return this.#paletteState.selectedColor;
    }
 }
