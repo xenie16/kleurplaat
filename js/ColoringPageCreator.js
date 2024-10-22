@@ -2,14 +2,18 @@
 
 import { ColoringGrid } from "./ColoringGrid.js";
 import { ColorPalette } from "./ColorPalette.js";
+import { Settings } from "./Settings.js";
+
 
 export class ColoringPageCreator {
    constructor(config) {
       this.coloringTableBody = config.coloringTableBodyId;
       this.colorsTableBody = config.colorsTableBodyId;
 
-      this.rows = config.rows || 10;
-      this.columns = config.columns || 10;
+      this.settings = new Settings();
+
+      this.rows = config.rows;
+      this.columns = config.columns;
       this.colors = config.colors || ["white", "red", "green", "blue",];
       this.resetColor = this.colors[0];
 
@@ -28,6 +32,15 @@ export class ColoringPageCreator {
          colorPalette: this.colorPalette,
       });
 
+      this.settings.generateButton.addEventListener("click", () => {
+         const newRows = this.settings.getRows();
+         const newColumns = this.settings.getColumns();
+
+         if (newRows && newColumns) {
+            this.updateGrid(newRows, newColumns);
+         }
+      })
+
       this.saveButton = document.getElementById("saveButton");
       this.loadButton = document.getElementById("loadButton");
       this.resetButton = document.getElementById("resetButton");
@@ -35,6 +48,21 @@ export class ColoringPageCreator {
       this.saveButton.addEventListener("click", () => this.saveClicked());
       this.loadButton.addEventListener("click", () => this.loadClicked());
       this.resetButton.addEventListener("click", () => this.resetClicked());
+   }
+
+   updateGrid(newRows, newColumns) {
+      this.coloringTableBody.innerHTML = "";
+      this.rows = newRows;
+      this.columns = newColumns;
+      this.coloringGrid = new ColoringGrid({
+         table: this.coloringTableBody,
+         rows: this.rows,
+         columns: this.columns,
+         colors: this.colors,
+         colorPalette: this.colorPalette,
+      });
+
+      this.settings.toggleSettings();
    }
 
    resetClicked(resetColor = this.colors[0]) {
@@ -90,12 +118,25 @@ export class ColoringPageCreator {
 
             reader.addEventListener("load", () => {
                const json = reader.result;
-               const rows = JSON.parse(json);
+               const rowsArray = JSON.parse(json);
 
-               for (let i = 0; i < rows.length; i++) {
-                  for (let j = 0; j < rows[i].length; j++) {
+               this.rows = rowsArray.length;
+               this.columns = rowsArray[0].length;
+
+               this.coloringTableBody.innerHTML = "";
+
+               this.coloringGrid = new ColoringGrid({
+                  table: this.coloringTableBody,
+                  rows: this.rows,
+                  columns: this.columns,
+                  colors: this.colors,
+                  colorPalette: this.colorPalette,
+               });
+
+               for (let i = 0; i < rowsArray.length; i++) {
+                  for (let j = 0; j < rowsArray[i].length; j++) {
                      const cell = this.coloringTableBody.children[i].children[j];
-                     cell.style.backgroundColor = rows[i][j];
+                     cell.style.backgroundColor = rowsArray[i][j];
                   }
                }
             });
