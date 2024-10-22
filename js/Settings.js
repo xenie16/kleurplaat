@@ -1,32 +1,65 @@
 "use strict";
 
 export class Settings {
-   constructor() {
-      this.generateButton = document.getElementById("generateButton");
-      this.rowInput = document.getElementById("rowInput");
-      this.colInput = document.getElementById("colInput");
 
-      this.settingsIcon = document.getElementById("settingsIcon");
-      this.settingsContainer = document.getElementById("settingsContainer");
+   #elements;
 
-      this.settingsIcon.addEventListener("click", () => {
-         this.toggleSettings();
-      });
+   constructor(config) {
+      this.initializeElements();
+      this.bindEvents();
    }
 
-   getRows() {
-      return this.rowInput.value;
+   initializeElements() {
+      this.#elements = {
+         generateButton: document.getElementById("generateButton"),
+         rowInput: document.getElementById("rowInput"),
+         colInput: document.getElementById("colInput"),
+
+         settingsIcon: document.getElementById("settingsIcon"),
+         settingsContainer: document.getElementById("settingsContainer"),
+      }
    }
 
-   getColumns() {
-      return this.colInput.value;
+   bindEvents() {
+      this.#elements.settingsIcon.addEventListener("click", () => this.toggleSettings());
+
+      this.#elements.rowInput.addEventListener("input", (event) => this.validateNumericInput(event));
+
+      this.#elements.colInput.addEventListener("input", (event) => this.validateNumericInput(event));
+
+   }
+
+   validateNumericInput(event) {
+      const input = event.target;
+      const value = input.value.replace(/[^0-9]/g, '');
+      const numValue = parseInt(value);
+
+      if (numValue > 50) {
+         input.value = 50;
+      } else if (numValue < 1) {
+         input.value = 1;
+      } else {
+         input.value = numValue;
+      }
    }
 
    toggleSettings() {
-      if (this.settingsContainer.style.display === "none" || this.settingsContainer.style.display === "") {
-         this.settingsContainer.style.display = "block";
-      } else {
-         this.settingsContainer.style.display = "none";
-      }
+      const isHidden =
+         this.#elements.settingsContainer.style.display === "none" ||
+         this.#elements.settingsContainer.style.display === "";
+
+      this.#elements.settingsContainer.style.display = isHidden ? "block" : "none";
+   }
+
+   getRows() {
+      return this.#elements.rowInput.value;
+   }
+
+   getColumns() {
+      return this.#elements.colInput.value;
+   }
+
+   getGenerateButton() {
+      return this.#elements.generateButton;
    }
 }

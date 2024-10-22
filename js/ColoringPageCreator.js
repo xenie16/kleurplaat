@@ -79,7 +79,7 @@ export class ColoringPageCreator {
    }
 
    bindEventListeners() {
-      this.settings.generateButton.addEventListener("click", () => this.handleGenerateClick());
+      this.settings.getGenerateButton().addEventListener("click", () => this.handleGenerateClick());
       this.elements.saveButton.addEventListener("click", () => this.handleSave());
       this.elements.loadButton.addEventListener("click", () => this.handleLoad());
       this.elements.resetButton.addEventListener("click", () => this.handleReset());
@@ -93,6 +93,8 @@ export class ColoringPageCreator {
       if (newRows && newColumns) {
          this.updateGrid(newRows, newColumns);
       }
+
+      this.settings.toggleSettings();
    }
 
    handleReset() {
@@ -115,7 +117,6 @@ export class ColoringPageCreator {
       this.elements.coloringTableBody.innerHTML = "";
 
       this.createColoringGrid();
-      this.settings.toggleSettings();
    }
 
    resetGrid(resetColor = this.state.colors[0]) {
