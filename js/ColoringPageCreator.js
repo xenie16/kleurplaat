@@ -14,7 +14,7 @@ export class ColoringPageCreator {
 
       this.rows = config.rows;
       this.columns = config.columns;
-      this.colors = config.colors || ["white", "red", "green", "blue",];
+      this.colors = config.colors;
       this.resetColor = this.colors[0];
 
       this.colorPalette = new ColorPalette({
